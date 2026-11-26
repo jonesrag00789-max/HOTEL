@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Madurain's Hotel</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<div id="auth" class="auth">
+  <aside class="auth-side"><div><h1>Madurain's Hotel</h1><p>Book your room in a few clicks and manage every stay in one place.</p></div>
+    <ul><li>Standard, Deluxe and Suite rooms</li><li>Instant confirmation, no double bookings</li><li>Free cancellation up to 2 days before check-in</li></ul></aside>
+  <main class="auth-main">
+    <form id="loginForm" class="auth-form" novalidate>
+      <h2>Welcome back</h2><p class="muted">Sign in to book and manage your stays.</p>
+      <div class="stackf">
+        <div id="loginError" class="error" role="alert" hidden></div>
+        <label class="field">Username <input id="lUser" autocomplete="username" autofocus></label>
+        <label class="field">Password <input id="lPass" type="password" autocomplete="current-password"></label>
+      </div>
+      <button class="btn primary block" id="loginBtn">Sign in</button>
+      <p class="alt">New here? <a href="#" id="toRegister">Create an account</a></p>
+      <p class="demo-note">Demo mode: nothing is saved. Refreshing the page resets everything. Admin sign-in: admin / admin123.</p>
+    </form>
+    <form id="registerForm" class="auth-form" hidden novalidate>
+      <h2>Create your account</h2><p class="muted">It takes less than a minute.</p>
+      <div class="stackf">
+        <div id="registerError" class="error" role="alert" hidden></div>
+        <label class="field">Full name <input id="regName" autocomplete="name"></label>
+        <label class="field">Phone number <input id="regPhone" inputmode="tel" autocomplete="tel"></label>
+        <label class="field">Username <input id="regUser" autocomplete="username" placeholder="Letters, numbers, underscore"></label>
+        <div class="grid2">
+          <label class="field">Password <input id="regPass" type="password" autocomplete="new-password" placeholder="6+ characters"></label>
+          <label class="field">Confirm <input id="regConfirm" type="password" autocomplete="new-password"></label>
+        </div>
+      </div>
+      <button class="btn primary block" id="registerBtn">Create account</button>
+      <p class="alt">Already registered? <a href="#" id="toLogin">Sign in</a></p>
+      <p class="demo-note">Demo mode: your account exists only until you refresh the page.</p>
+    </form>
+  </main>
+</div>
+<div id="appView" hidden>
+<div class="topbar"><div class="in">
+  <span class="brand">Grand Meridian</span>
+  <nav class="tabs">
+    <button class="tab active" data-tab="book">Book a room</button>
+    <button class="tab" data-tab="bookings" id="bookingsTab">My bookings</button>
+    <button class="tab" data-tab="rooms">Rooms</button>
+    <button class="tab" data-tab="dashboard" id="dashTab" hidden>Dashboard</button>
+  </nav>
+  <div class="user"><span class="avatar" id="avatar"></span><span class="name" id="who"></span><button class="btn sm" id="logoutBtn">Sign out</button></div>
+</div></div>
+
+<main class="container">
+  <section id="book" class="panel">
+    <div class="page-title"><h1>Book a room</h1><p class="muted">Choose your dates, pick a room and confirm.</p></div>
+    <div class="layout">
+      <div>
+        <div class="card">
+          <header><h2><span class="step">1</span>Dates</h2><span class="pill info" id="nights"></span></header>
+          <div class="grid2">
+            <label class="field">Check-in <input type="date" id="checkIn"></label>
+            <label class="field">Check-out <input type="date" id="checkOut"></label>
+          </div>
+        </div>
+        <div class="card">
+          <header><h2><span class="step">2</span>Choose a room</h2></header>
+          <div id="options" class="options"></div>
+        </div>
+      </div>
+      <aside class="card sticky">
+        <header><h2><span class="step">3</span>Your details</h2></header>
+        <div id="detailsEmpty" class="empty"><b>No room selected</b>Pick a room type to see your price.</div>
+        <div id="detailsForm" hidden>
+          <div class="stackf">
+            <label class="field">Guest name <input id="name"></label>
+            <label class="field">Phone <input id="phone" inputmode="tel"></label>
+            <div class="grid2">
+              <label class="field">Guests <select id="guests"></select></label>
+              <label class="field">Promo code <input id="promo" placeholder="Optional"></label>
+            </div>
+            <label class="check"><input type="checkbox" id="breakfast"> Add breakfast (₹500 per guest, per night)</label>
+            <div id="quote"></div>
+            <button class="btn primary block" id="reserveBtn">Confirm booking</button>
+            <p class="muted small">Free cancellation until 2 days before check-in. After that, one night is charged.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="bookings" class="panel" hidden>
+    <div class="page-title"><h1 id="bookingsTitle">My bookings</h1><p class="muted" id="bookingsSub">Your reservations, with bills and cancellation.</p></div>
+    <div class="card">
+      <div class="toolbar">
+        <input id="filterText" type="search" placeholder="Search by name, room or ID" aria-label="Search bookings">
+        <select id="filterStatus" aria-label="Filter by status"><option value="">All statuses</option><option value="CONFIRMED">Confirmed</option><option value="CANCELLED">Cancelled</option></select>
+      </div>
+      <div class="scroll"><table class="list" id="bookingTable"></table></div>
+    </div>
+  </section>
+
+  <section id="rooms" class="panel" hidden>
+    <div class="page-title"><h1>Rooms</h1><p class="muted">Status for tonight.</p></div>
+    <div class="card"><div id="roomGrid" class="rooms"></div></div>
+  </section>
+
+  <section id="dashboard" class="panel" hidden>
+    <div class="page-title"><h1>Dashboard</h1><p class="muted">How the hotel is doing right now.</p></div>
+    <div id="stats" class="stats"></div>
+    <div class="card"><header><h2>Occupancy by room type</h2></header><div id="byType"></div></div>
+  </section>
+</main>
+
+<dialog id="billDialog"><div id="billBody"></div><div class="dlg-actions"><button class="btn" id="printBtn">Print</button><button class="btn primary" data-close>Close</button></div></dialog>
+<dialog id="okDialog"><div id="okBody"></div><div class="dlg-actions"><button class="btn" data-close>Book another</button><button class="btn primary" id="viewBookings">View bookings</button></div></dialog>
+<div id="toasts" aria-live="polite"></div>
+</div>
+<script src="mock-api.js"></script>
+<script src="app.js"></script>
+</body></html>
